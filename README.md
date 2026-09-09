@@ -4,16 +4,11 @@ A seven-button Easy Ease panel for After Effects, built to be squeezed
 down to almost nothing. Select keyframes, click a button, done — one click
 per easing preset, no dialog, no options, no settings to remember.
 
-<p align="left">
-  <img src="panel-55px.png" alt="Speed7 docked at 55 pixels wide" />
-  &nbsp;&nbsp;&nbsp;
-  <img src="panel-77px.png" alt="Speed7 docked at 77 pixels wide" />
-</p>
+<img src="screen-speed7.png" alt="The Speed7 panel, docked as a narrow column of seven curve icons" />
 
-*The same panel at 55 and 77 pixels wide, shown at actual size. The icons
-are redrawn at the button's current size rather than scaled as bitmaps, and
-the strip has flipped itself to a column because the panel is taller than
-it is wide.*
+*Shown at actual size. The icons are redrawn at the button's current size
+rather than scaled as bitmaps, and the strip has flipped itself to a column
+because the panel is taller than it is wide.*
 
 ## Why
 
