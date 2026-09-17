@@ -47,6 +47,13 @@ curve drawn on each icon is the speed graph it applies:
 6. Influence 100% out / &nbsp;&nbsp;0% in
 7. Constant acceleration
 
+Every button only touches the **segments between selected keyframes**. A
+key's incoming ease is changed only when the previous key is selected
+too, its outgoing ease only when the next key is. With keys 2 and 3
+selected out of 4, only the 2-3 segment changes; 1-2 and 3-4 keep their
+interpolation and influence exactly as they were, linear or not. A single
+selected key with no selected neighbour is left untouched.
+
 Buttons 1 and 7 set linear interpolation, and additionally apply a 33%
 influence on the side facing an adjacent selected keyframe, so a run of
 selected keys eases as a group rather than key by key.

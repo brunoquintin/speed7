@@ -1,6 +1,6 @@
 /*
 ================================================================================
-    Speed7  v1.1
+    Speed7  v1.2
     A seven-button Easy Ease panel meant to be squeezed down to almost nothing.
 
     Adobe After Effects script (ExtendScript, based on ECMAScript 3).
@@ -57,6 +57,13 @@
     Buttons 2 and 6 ask for 0% influence but are sent 0.1%, because After
     Effects rejects an influence of exactly zero. The difference is not
     visible on a curve and keeps the value inside the legal range.
+
+    Every button only touches the SEGMENTS between selected keyframes. A
+    key's incoming ease is changed only when the previous key is selected
+    too, its outgoing ease only when the next key is. With keys 2 and 3
+    selected out of 4, only the 2-3 segment changes; 1-2 and 3-4 keep
+    their interpolation and influence exactly as they were, linear or not.
+    A single selected key with no selected neighbour is left untouched.
 
     WHAT IS SKIPPED, AND WHY
     ------------------------
@@ -386,9 +393,29 @@
                 if (!keys || keys.length === 0) continue;
                 for (var j = 0; j < keys.length; j++) {
                     var k       = keys[j];
-                    var easeIn  = makeFlatEaseArray(prop.keyInTemporalEase(k),  influIn);
-                    var easeOut = makeFlatEaseArray(prop.keyOutTemporalEase(k), influOut);
+                    var prevSel = (k > 1) && prop.keySelected(k - 1);
+                    var nextSel = (k < prop.numKeys) && prop.keySelected(k + 1);
+                    if (!prevSel && !nextSel) continue;
+
+                    var inType  = prop.keyInInterpolationType(k);
+                    var outType = prop.keyOutInterpolationType(k);
+                    var easeIn  = prop.keyInTemporalEase(k);
+                    var easeOut = prop.keyOutTemporalEase(k);
+                    if (prevSel) {
+                        easeIn = makeFlatEaseArray(easeIn, influIn);
+                        inType = KeyframeInterpolationType.BEZIER;
+                    }
+                    if (nextSel) {
+                        easeOut = makeFlatEaseArray(easeOut, influOut);
+                        outType = KeyframeInterpolationType.BEZIER;
+                    }
+                    // Set the types before AND after the ease: before, so a
+                    // LINEAR side accepts the ease at all; after, because
+                    // setTemporalEaseAtKey flips both sides to BEZIER and the
+                    // untouched side must get its original type back.
+                    prop.setInterpolationTypeAtKey(k, inType, outType);
                     prop.setTemporalEaseAtKey(k, easeIn, easeOut);
+                    prop.setInterpolationTypeAtKey(k, inType, outType);
                 }
             }
         } finally {
